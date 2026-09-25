@@ -61,12 +61,6 @@ RUN apt-get update \
     python3-venv \
   && rm -rf /var/lib/apt/lists/*
 
-RUN curl -fsSL -o /tmp/gog.tar.gz \
-      https://github.com/openclaw/gogcli/releases/latest/download/gogcli_linux_amd64.tar.gz \
-  && tar xzf /tmp/gog.tar.gz -C /usr/local/bin gog \
-  && rm /tmp/gog.tar.gz \
-  && gog --version
-
 # `openclaw update` expects pnpm. Provide it in the runtime image.
 RUN corepack enable && corepack prepare pnpm@10.23.0 --activate
 
