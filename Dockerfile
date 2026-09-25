@@ -38,6 +38,11 @@ RUN set -eux; \
 # the workspace-wide typecheck. Not used in this deployment — safe to exclude.
 RUN rm -rf ./extensions/tlon
 
+# Work around an upstream build bug: the imessage extension's built-artifact
+# verification crashes during `pnpm build` on Node 24. It also requires a
+# signed-in macOS Messages app, which this deployment (Railway/Raspberry Pi) doesn't have.
+RUN rm -rf ./extensions/imessage
+
 RUN pnpm install --no-frozen-lockfile
 RUN pnpm build || true
 ENV OPENCLAW_PREFER_PNPM=1
