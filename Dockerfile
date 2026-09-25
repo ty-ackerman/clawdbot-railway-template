@@ -61,6 +61,16 @@ RUN apt-get update \
     python3-venv \
   && rm -rf /var/lib/apt/lists/*
 
+# Google Workspace CLI (Gmail/Calendar/Drive/etc.) used by the OpenClaw `gog` skill.
+# Credentials live on the Railway volume via GOG_HOME=/data/gog (set in Railway variables).
+ARG GOG_VERSION=0.41.0
+RUN curl -fsSL -o /tmp/gog.tar.gz \
+      "https://github.com/openclaw/gogcli/releases/download/v${GOG_VERSION}/gogcli_${GOG_VERSION}_linux_amd64.tar.gz" \
+  && mkdir -p /tmp/gog && tar xzf /tmp/gog.tar.gz -C /tmp/gog \
+  && install -m 755 "$(find /tmp/gog -name gog -type f | head -1)" /usr/local/bin/gog \
+  && rm -rf /tmp/gog /tmp/gog.tar.gz \
+  && gog --version
+
 # `openclaw update` expects pnpm. Provide it in the runtime image.
 RUN corepack enable && corepack prepare pnpm@10.23.0 --activate
 
