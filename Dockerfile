@@ -33,6 +33,11 @@ RUN set -eux; \
     sed -i -E 's/"openclaw"[[:space:]]*:[[:space:]]*"workspace:[^"]+"/"openclaw": "*"/g' "$f"; \
   done
 
+# Work around an upstream packaging bug: the tlon extension's TypeScript imports
+# react/@tanstack/react-query without declaring them as dependencies, which breaks
+# the workspace-wide typecheck. Not used in this deployment — safe to exclude.
+RUN rm -rf ./extensions/tlon
+
 RUN pnpm install --no-frozen-lockfile
 RUN pnpm build
 ENV OPENCLAW_PREFER_PNPM=1
